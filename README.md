@@ -1,3 +1,62 @@
+> **⚠️ This repository is a modified fork of [flybirdxx/ComfyUI-SDMatte](https://github.com/flybirdxx/ComfyUI-SDMatte)**, with several enhancements on top of the original. **The original README is kept below.**
+
+---
+
+# 🔧 Changes in This Fork
+
+### New Features
+
+| Feature | Description | Parameter / Node |
+|---|---|---|
+| 📂 **Local model scan** | All `.pth/.pt/.safetensors/.bin` under `models/SDMatte/` automatically appear in the `ckpt_name` dropdown. Just drop the file in and refresh the page — no code edits needed. | `ckpt_name` |
+| 💾 **Keep model loaded** | Caches the model instance so the second run skips reloading. | `keep_model_loaded` |
+| 🔀 **Precision toggle** | Switch between fp32 / fp16 for VRAM vs. stability. | `use_fp16` |
+| 🧹 **VRAM cleanup node** | Drop it anywhere in the workflow. **Whenever it executes, it frees SDMatte's VRAM.** | Node: `清理SDMatte显存` |
+| 🖼️ **Batch input** | Multiple images + 1 trimap → trimap is broadcast automatically. | automatic |
+| 📐 **Trimap shape compatibility** | Accepts `[H,W]` / `[B,H,W]` / `[B,1,H,W]`. | automatic |
+| 📥 **Local-first loading** | Use local file if present; only download when missing. | `download_model` |
+| 📝 **Better error messages** | Missing files print the exact path they should be placed at. | error output |
+
+### Bug Fixes
+
+- 🐛 **VRAM doubling** — old cache is now cleared when toggling `keep_model_loaded`
+- 🐛 **Batch mismatch** — fixed `Expected size N but got size 1` when using multiple images with one trimap
+- 🐛 **Shape error** — fixed `too many indices for tensor of dimension 3` when trimap is 4D
+- 🐛 **Path detection** — Windows absolute paths were mistakenly treated as HuggingFace repo IDs
+
+### Unchanged
+
+- Model architecture (`src/modeling/SDMatte/meta_arch.py`) is untouched
+- All original inputs/outputs/behaviors remain identical with default parameters
+
+---
+
+## 📌 Quick Start (This Fork)
+
+### Install
+
+1. Place the plugin under `ComfyUI/custom_nodes/`
+2. Prepare the **config files** for Stable Diffusion 2.1 base at `ComfyUI/models/diffusers/stable-diffusion-2-1-base/` (see original README, step 3)
+3. **Drop your SDMatte weights into `ComfyUI/models/SDMatte/`** (any `.pth` / `.safetensors`)
+4. Restart ComfyUI
+
+### Basic Usage
+
+1. Add the `Apply SDMatte` node
+2. Pick your model from the `ckpt_name` dropdown
+3. Connect `image` and `trimap`
+4. Run
+5. **To auto-free VRAM after each run** → append a `清理SDMatte显存` node at the end of the workflow
+
+### Recommended Settings
+
+- **Fastest**: `keep_model_loaded=True` + `use_fp16=True` + `inference_size=768`
+- **Cleanest**: `inference_size=1024` + `trimap_constraint=0.5~0.6` + accurate trimap
+- **Low VRAM**: `keep_model_loaded=False` + `use_fp16=True`
+- **Batch**: connect N images to `image`, 1 trimap to `trimap` — broadcast is automatic
+
+---
+
 # ComfyUI-SDMatte
 
 English | [简体中文](README_CN.md)
