@@ -1,4 +1,6 @@
-> **⚠️ 本仓库为 [flybirdxx/ComfyUI-SDMatte](https://github.com/flybirdxx/ComfyUI-SDMatte) 的修改版**，在原版基础上增加了若干实用功能。**原版说明见下方**。
+> **⚠️ 本仓库为 [flybirdxx/ComfyUI-SDMatte](https://github.com/flybirdxx/ComfyUI-SDMatte) 的修改版**，在原版基础上增加了若干实用功能。**原版说明见下方。**
+>
+> 📦 **离线配置包**：本仓库自带 `assets/stable-diffusion-2-1-base.zip`，首次运行自动解压 SD 2.1 配置文件到 `ComfyUI/models/diffusers/stable-diffusion-2-1-base/`。**无需联网。** 如果该目录已有配置，会跳过解压。
 
 ---
 
@@ -8,7 +10,8 @@
 
 | 功能 | 说明 | 对应参数/节点 |
 |---|---|---|
-| 📂 **本地模型扫描** | `models/SDMatte/` 下所有 `.pth/.pt/.safetensors/.bin` **自动出现在 `ckpt_name` 下拉框**，放进去刷新网页即可选，无需改代码 | `ckpt_name` |
+| 📦 **离线配置包** | 自带 `assets/stable-diffusion-2-1-base.zip`，首次运行自动解压 SD 2.1 配置文件，**完全离线可用** | 自动 |
+| 📂 **本地模型扫描** | `models/SDMatte/` 下所有 `.pth/.pt/.safetensors/.bin` **自动出现在 `ckpt_name` 下拉框**，放进去刷新网页即可选 | `ckpt_name` |
 | 💾 **模型常驻显存** | 开启后模型缓存复用，第二次跑免加载 | `keep_model_loaded` |
 | 🔀 **精度切换** | 一键切换 fp32 / fp16，省显存或最稳 | `use_fp16` |
 | 🧹 **显存清理节点** | 放到工作流任意位置，**只要被执行就释放 SDMatte 显存** | 节点：`清理SDMatte显存` |
@@ -19,10 +22,10 @@
 
 ### 修复的坑
 
-- 🐛 **显存翻倍 bug**：切换 `keep_model_loaded` 时自动清旧缓存
-- 🐛 **batch 不匹配**：多图 + 单 trimap 时报 `Expected size N but got size 1`
-- 🐛 **形状越界**：trimap 是 4D 时报 `too many indices for tensor of dimension 3`
-- 🐛 **路径识别**：Windows 绝对路径被当成 HuggingFace repo id
+- 🐛 **显存翻倍** — 切换 `keep_model_loaded` 时自动清旧缓存
+- 🐛 **batch 不匹配** — 多图 + 单 trimap 时报 `Expected size N but got size 1`
+- 🐛 **形状越界** — trimap 是 4D 时报 `too many indices for tensor of dimension 3`
+- 🐛 **路径识别** — Windows 绝对路径被当成 HuggingFace repo id
 
 ### 未改动
 
@@ -36,8 +39,8 @@
 ### 安装
 
 1. 把插件放到 `ComfyUI/custom_nodes/`
-2. 准备好 `ComfyUI/models/diffusers/stable-diffusion-2-1-base/` 的**配置文件**（见原版文档步骤 3）
-3. **把 SDMatte 权重丢进 `ComfyUI/models/SDMatte/`**（任意 `.pth / .safetensors` 都行）
+2. **SD 2.1 配置文件自动解压**：插件自带 `assets/stable-diffusion-2-1-base.zip`，首次运行自动解压到 `ComfyUI/models/diffusers/stable-diffusion-2-1-base/`，**无需下载、无需联网**。如该目录已有完整配置，会跳过解压。
+3. **把 SDMatte 权重丢进 `ComfyUI/models/SDMatte/`**（任意 `.pth` / `.safetensors`）
 4. 重启 ComfyUI
 
 ### 快速上手
