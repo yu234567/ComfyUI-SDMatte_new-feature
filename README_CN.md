@@ -1,3 +1,62 @@
+> **⚠️ 本仓库为 [flybirdxx/ComfyUI-SDMatte](https://github.com/flybirdxx/ComfyUI-SDMatte) 的修改版**，在原版基础上增加了若干实用功能。**原版说明见下方**。
+
+---
+
+# 🔧 本仓库改动（在原版基础上）
+
+### 新增功能
+
+| 功能 | 说明 | 对应参数/节点 |
+|---|---|---|
+| 📂 **本地模型扫描** | `models/SDMatte/` 下所有 `.pth/.pt/.safetensors/.bin` **自动出现在 `ckpt_name` 下拉框**，放进去刷新网页即可选，无需改代码 | `ckpt_name` |
+| 💾 **模型常驻显存** | 开启后模型缓存复用，第二次跑免加载 | `keep_model_loaded` |
+| 🔀 **精度切换** | 一键切换 fp32 / fp16，省显存或最稳 | `use_fp16` |
+| 🧹 **显存清理节点** | 放到工作流任意位置，**只要被执行就释放 SDMatte 显存** | 节点：`清理SDMatte显存` |
+| 🖼️ **多图批量** | 多张图 + 1 张 trimap，trimap 自动广播 | 自动 |
+| 📐 **Trimap 形状兼容** | 支持 `[H,W]` / `[B,H,W]` / `[B,1,H,W]` | 自动 |
+| 📥 **本地优先下载** | 本地有就直接用，本地没有才去下 | `download_model` |
+| 📝 **错误提示增强** | 缺文件时明确打印应该放哪 | 报错信息 |
+
+### 修复的坑
+
+- 🐛 **显存翻倍 bug**：切换 `keep_model_loaded` 时自动清旧缓存
+- 🐛 **batch 不匹配**：多图 + 单 trimap 时报 `Expected size N but got size 1`
+- 🐛 **形状越界**：trimap 是 4D 时报 `too many indices for tensor of dimension 3`
+- 🐛 **路径识别**：Windows 绝对路径被当成 HuggingFace repo id
+
+### 未改动
+
+- 模型结构（`src/modeling/SDMatte/meta_arch.py`）保持不变
+- 原版所有输入输出、行为，默认参数下与原版一致
+
+---
+
+## 📌 使用速览（本仓库版）
+
+### 安装
+
+1. 把插件放到 `ComfyUI/custom_nodes/`
+2. 准备好 `ComfyUI/models/diffusers/stable-diffusion-2-1-base/` 的**配置文件**（见原版文档步骤 3）
+3. **把 SDMatte 权重丢进 `ComfyUI/models/SDMatte/`**（任意 `.pth / .safetensors` 都行）
+4. 重启 ComfyUI
+
+### 快速上手
+
+1. 添加 `Apply SDMatte` 节点
+2. `ckpt_name` 下拉框里选你丢进去的模型
+3. 接 `image` 和 `trimap`
+4. 跑
+5. **想跑完自动释放显存** → 末尾加 `清理SDMatte显存` 节点，接在最后
+
+### 常用参数
+
+- **想快**：`keep_model_loaded=True` + `use_fp16=True` + `inference_size=768`
+- **想最干净**：`inference_size=1024` + `trimap_constraint=0.5~0.6` + trimap 画准
+- **显存紧张**：`keep_model_loaded=False` + `use_fp16=True`
+- **多图批量**：`image` 接 N 张，`trimap` 接 1 张，自动广播
+
+---
+
 # ComfyUI-SDMatte
 
 [English](README_CN.md) | 简体中文
