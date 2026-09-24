@@ -1,4 +1,6 @@
 > **⚠️ This repository is a modified fork of [flybirdxx/ComfyUI-SDMatte](https://github.com/flybirdxx/ComfyUI-SDMatte)**, with several enhancements on top of the original. **The original README is kept below.**
+>
+> 📦 **Offline config bundle**: This fork ships `assets/stable-diffusion-2-1-base.zip`. On first run, it auto-extracts SD 2.1 config files to `ComfyUI/models/diffusers/stable-diffusion-2-1-base/`. **No internet needed.** If you already have a config folder there, extraction is skipped.
 
 ---
 
@@ -8,6 +10,7 @@
 
 | Feature | Description | Parameter / Node |
 |---|---|---|
+| 📦 **Offline config bundle** | Ships `assets/stable-diffusion-2-1-base.zip`. Auto-extracts SD 2.1 config files on first run — **works fully offline**. | automatic |
 | 📂 **Local model scan** | All `.pth/.pt/.safetensors/.bin` under `models/SDMatte/` automatically appear in the `ckpt_name` dropdown. Just drop the file in and refresh the page — no code edits needed. | `ckpt_name` |
 | 💾 **Keep model loaded** | Caches the model instance so the second run skips reloading. | `keep_model_loaded` |
 | 🔀 **Precision toggle** | Switch between fp32 / fp16 for VRAM vs. stability. | `use_fp16` |
@@ -36,7 +39,7 @@
 ### Install
 
 1. Place the plugin under `ComfyUI/custom_nodes/`
-2. Prepare the **config files** for Stable Diffusion 2.1 base at `ComfyUI/models/diffusers/stable-diffusion-2-1-base/` (see original README, step 3)
+2. **SD 2.1 config files are auto-extracted** from the bundled `assets/stable-diffusion-2-1-base.zip` on first run — **no download, no internet needed**. If you already have a config folder at `ComfyUI/models/diffusers/stable-diffusion-2-1-base/`, extraction is skipped.
 3. **Drop your SDMatte weights into `ComfyUI/models/SDMatte/`** (any `.pth` / `.safetensors`)
 4. Restart ComfyUI
 
